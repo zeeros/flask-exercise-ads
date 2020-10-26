@@ -1,0 +1,15 @@
+version: "2"
+services:
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - /Data/db:/data/db
+  web:
+    image: zeeros/flask-ads
+    command: python manage.py runserver -h 0.0.0.0 -p 5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code

@@ -1,0 +1,5 @@
+virtualenv
+Flask
+Flask-Script
+WTForms
+Flask-PyMongo
