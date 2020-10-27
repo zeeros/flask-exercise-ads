@@ -1,6 +1,10 @@
 {% macro edit_field(field, catch_kwargs=true) %}
+  <script>
+    document.getElementById("description").value = document.getElementById("description").getAttribute("value");
+  </script>
   <div class="control-group{% if field.errors %} error{% endif %}">
     {{ field.label(class="control-label") }}
+    {{value}}
   <div class="controls">
     {{ field(**kwargs) }}
     {% for error in field.errors %}

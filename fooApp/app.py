@@ -47,9 +47,25 @@ def product_detail(product_id):
   return render_template('product/detail.html',
     product=product)
 
+#@app.route('/products/<product_id>/edit/', methods=['GET', 'POST'])
+#def product_edit(product_id):
+#  return 'Form to edit product #.'.format(product_id)
+
 @app.route('/products/<product_id>/edit/', methods=['GET', 'POST'])
 def product_edit(product_id):
-  return 'Form to edit product #.'.format(product_id)
+  """Provide HTML page with a given product."""
+  # Query: get Product object by ID.
+  product = mongo.db.products.find_one({ "_id": ObjectId(product_id) })
+  if product is None:
+    # Abort with Not Found.
+    abort(404)
+  form = ProductForm(request.form)
+  if request.method == 'POST' and form.validate():
+    mongo.db.products.update_one({ "_id": ObjectId(product_id) }, {"$set": form.data})
+    # Success. Send user back to full product list.
+    return redirect(url_for('products_list'))
+  # Either first load or validation error at this point.
+  return render_template('product/edit.html', form=form, product=product)
 
 @app.route('/products/<product_id>/delete/', methods=['DELETE'])
 def product_delete(product_id):
