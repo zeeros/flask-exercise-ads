@@ -8,7 +8,7 @@ import json
 app = Flask(__name__)
 
 app.config['MONGO_DBNAME'] = 'foodb'
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/foodb'
+app.config['MONGO_URI'] = 'mongodb://db:27017/foodb'
 
 mongo = PyMongo(app)
 
@@ -53,7 +53,14 @@ def product_edit(product_id):
 
 @app.route('/products/<product_id>/delete/', methods=['DELETE'])
 def product_delete(product_id):
-    raise NotImplementedError('DELETE')
+  """Delete record using HTTP DELETE, respond with JSON."""
+  result = mongo.db.products.delete_one({ "_id": ObjectId(product_id) })
+  if result.deleted_count == 0:
+    # Abort with Not Found, but with simple JSON response.
+    response = jsonify({'status': 'Not Found'})
+    response.status = 404
+    return response
+  return jsonify({'status': 'OK'})
 
 '''
 @app.route('/string/')
